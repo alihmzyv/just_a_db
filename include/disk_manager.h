@@ -5,6 +5,12 @@
 
 typedef struct DiskManager DiskManager;
 
+typedef enum {
+    DISK_MANAGER_OK = 0,
+    DISK_MANAGER_ERR_OUT_OF_RANGE = -1,
+    DISK_MANAGER_ERR_IO = -2,
+} DiskManagerStatus;
+
 int disk_manager_create(const char *filename, DiskManager **out);
 int disk_manager_destroy(DiskManager *dm);
 

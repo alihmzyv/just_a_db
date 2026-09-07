@@ -29,3 +29,11 @@ instead of crashing.
 - Use this space for short dated notes on design decisions or things to
   revisit — not a full diary, just what a future session (yours or
   Claude's) would need to avoid re-deriving context.
+
+- 2026-09-08: `disk_manager_allocate_page` does `dm->num_pages++` before
+  writing the zeroed page, then decrements it back on write failure. Fine
+  for now (single-threaded), but once Phase 6 concurrency lands, another
+  thread could observe the incremented `num_pages` — and treat that page
+  id as valid — during the window before the write is confirmed or rolled
+  back. Will need a lock/atomic update around this increment-then-maybe-
+  rollback sequence at that point.
