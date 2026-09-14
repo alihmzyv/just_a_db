@@ -43,6 +43,15 @@ to **reviewer, not author**:
 - Exception: non-conceptual scaffolding — Makefiles, test harness
   plumbing, CI config, boilerplate I've already shown I understand — write
   these directly. No need to make me retype things I'm not learning from.
+- Introduce a concept — in design discussion *or* in code — only once a
+  concrete need for it has actually surfaced, never as "you'll need this
+  eventually." This is the same naive → fault → fix approach applied one
+  level up: state the problem that's actually blocking things right now,
+  then discuss/build the specific piece that solves it. Don't pre-list a
+  struct's full eventual field set or an API's full eventual surface as a
+  checklist — grow it need by need, the same way the buffer pool itself
+  was motivated by a concrete problem (repeated disk I/O) rather than
+  announced up front as "here's what you'll build."
 - Never suggest removing the sanitizer flags below to "just get it
   working." A change isn't done until it's clean under them.
 
