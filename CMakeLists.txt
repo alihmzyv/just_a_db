@@ -6,7 +6,9 @@ set(CMAKE_C_STANDARD 11)
 # This file exists only so CLion can index/navigate the project.
 # Actual builds go through the Makefile (make / make sanitize / make test).
 file(GLOB SOURCES src/*.c)
-add_executable(just_a_db ${SOURCES})
+add_executable(just_a_db ${SOURCES}
+        src/b_plus_tree_index.c
+        include/b_plus_tree_index.h)
 target_include_directories(just_a_db PRIVATE include)
 
 add_executable(test_disk_manager_roundtrip

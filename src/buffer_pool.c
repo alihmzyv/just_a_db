@@ -17,7 +17,7 @@ struct BufferPool {
     void* frames[TABLE_MAX_FRAMES];
 } typedef BufferPool;
 
-static int evict(BufferPool* buffer_pool, int* index) {
+static int evict(BufferPool* buffer_pool, uint16_t* index) {
     //FIXME: use a proper eviction policy
     free(buffer_pool->frames[0]);
     buffer_pool->frames[0] = NULL;
@@ -37,7 +37,7 @@ static BufferPoolStatus to_buffer_pool_status(DiskManagerStatus disk_manager_sta
 int buffer_pool_get_page(BufferPool* buffer_pool, uint32_t page_id, void** page) {
     pthread_mutex_lock(&lock); //TODO: do fine-grained locking
     BufferPoolStatus status = BUFFER_POOL_OK;
-    int slot = page_id % TABLE_MAX_FRAMES;
+    uint16_t slot = page_id % TABLE_MAX_FRAMES;
     uint32_t page_id_of_slot;
     bool success = false;
     do {

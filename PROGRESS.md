@@ -9,7 +9,7 @@ See ROADMAP.md for the full spec and gate condition of each phase.
 | Part 1: cstack tutorial | done | — | Through Part 14 |
 | Phase 1: Disk manager + pages | done | 2026-09-13 | Slotted pages / heap file deferred, see log |
 | Phase 2: Buffer pool | in progress | — | |
-| Phase 3: B+tree index | not started | — | |
+| Phase 3: B+tree index | in progress | — | |
 | Phase 4: Catalog + executors | not started | — | |
 | Phase 5: SQL frontend | not started | — | |
 | Phase 6: Concurrency | not started | — | |
@@ -18,16 +18,29 @@ See ROADMAP.md for the full spec and gate condition of each phase.
 
 ## Current focus
 
-Phase 2 — Buffer pool.
+Phase 3 — B+tree index.
 
-Gate: correctly works with a database larger than the configured
-buffer-pool memory budget.
+Gate: point lookups and range scans both work correctly, including after
+several splits.
+
+Phase 2 (buffer pool) is functionally in place (`buffer_pool_get_page`,
+eviction, error translation) but its own gate test was skipped for now —
+no `buffer_pool_create`/`destroy`, no dirty-flag/unpin/flush-on-evict yet.
+Picking up B+tree in parallel rather than closing that out first; revisit
+Phase 2's gate when those pieces are actually needed.
 
 ## Log
 
 - Use this space for short dated notes on design decisions or things to
   revisit — not a full diary, just what a future session (yours or
   Claude's) would need to avoid re-deriving context.
+
+- 2026-09-15: `buffer_pool_get_page` takes one single, coarse-grained
+  `static pthread_mutex_t lock` for its entire body — every fetch is fully
+  serialized pool-wide, and the lock isn't even tied to a specific
+  `BufferPool` instance. Fine for now (no concurrency yet), but once
+  Phase 6 lands this should become per-frame/per-bucket latching instead
+  of one pool-wide latch, so unrelated fetches don't block each other.
 
 - 2026-09-13: Phase 1 gate (round-trip + out-of-range handling) passed.
   Slotted pages for variable-length tuples and the heap file abstraction
